@@ -32,7 +32,7 @@ const BaseButton = () => {
 
   return (
     <button className='sound-base' onClick={toggleAudio}>
-      {isPlaying ? 'Stop Base' : 'Play Base (Space Bar)'}
+      {isPlaying ? 'Stop' : 'Base'}
     </button>
   );
 };
