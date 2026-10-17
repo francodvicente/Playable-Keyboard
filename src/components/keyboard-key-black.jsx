@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import useKeyboardSound from '../customHooks/use-keyboard-sound';
 import useMouseSound from '../customHooks/use-mouse-sound';
       
-const KeyboardKeyBlack = ({ keyCode, soundFile, children, index, volume }) => {
+const KeyboardKeyBlack = ({ keyCode, soundFile, children, index }) => {
   const audioRef = useRef(null);
   useKeyboardSound(keyCode, soundFile);
   const mouseSoundRef = useMouseSound(soundFile);

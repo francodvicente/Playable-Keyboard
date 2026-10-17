@@ -1,23 +1,16 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import useKeyboardSound from '../customHooks/use-keyboard-sound';
 import useMouseSound from '../customHooks/use-mouse-sound';
 
-const KeyboardKeyWhite = ({ keyCode, soundFile, children, index, volume = 1, setKeyVolume }) => {
+const KeyboardKeyWhite = ({ keyCode, soundFile, children, index }) => {
   const audioRef = useRef(null);
   useKeyboardSound(keyCode, soundFile);
   const mouseSoundRef = useMouseSound(soundFile);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume / 100;
-    }
-  }, [volume]);
-
   const handleMouseUp = () => {
     if (audioRef.current && !isPlaying) {
       audioRef.current.currentTime = 0;
-      audioRef.current.volume = Math.max(0, Math.min(1, volume));
       audioRef.current.play();
       setIsPlaying(true);
     }

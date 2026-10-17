@@ -38,10 +38,6 @@ body {
   outline: none;
   border-radius: 30px;
 }
-.volume-slider input {
-  accent-color: #fff;
-  
-}
 
 /* OVAL BUTTON */
 button{
@@ -274,9 +270,6 @@ br{
   .group-5{
     display: none;
   }
-  .volume-input{
-    width: 40%;
-  }
 }
 
 @media screen and (max-width: 1300px) {
@@ -293,9 +286,6 @@ br{
     width: 800px;
   }
   .group-3{
-    display: none;
-  }
-  .volume-input-valueText{
     display: none;
   }
   .keyboard-setings-turnOnOff-button{
@@ -345,9 +335,6 @@ br{
   }
   .sound-base{
     display: none;
-  }
-  .volume-input{
-    width: 20%;
   }
   .keyboard-setings-turnOnOff-button{
     display: none;

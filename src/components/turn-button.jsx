@@ -4,11 +4,9 @@ import { useState } from "react";
 function TurnButton({initialIsOn}) {
 
   const [isOn, setIsOn] = useState(initialIsOn);
-  //const [volume, setVolume] = useState(volume);
 
   const handleClick1 = () => {
     setIsOn(!isOn);
-    //setVolume(isOn ? 0 : 50)
   };
   const text = isOn ? "On" : "Off";
   const buttonClassName = isOn
