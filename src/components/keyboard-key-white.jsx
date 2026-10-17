@@ -1,23 +1,22 @@
-import React, { useRef, useState } from 'react';
+/* eslint-disable react/prop-types */
+import { useState } from 'react';
 import useKeyboardSound from '../customHooks/use-keyboard-sound';
-import useMouseSound from '../customHooks/use-mouse-sound';
+import { playSound } from '../utils/sound-player';
 
-const KeyboardKeyWhite = ({ keyCode, soundFile, children, index }) => {
-  const audioRef = useRef(null);
-  useKeyboardSound(keyCode, soundFile);
-  const mouseSoundRef = useMouseSound(soundFile);
-  const [isPlaying, setIsPlaying] = useState(false);
+const KeyboardKeyWhite = ({ keyCode, soundFile, children, index, onClick, onKeyUp }) => {
+  const [isPressed, setIsPressed] = useState(false);
 
-  const handleMouseUp = () => {
-    if (audioRef.current && !isPlaying) {
-      audioRef.current.currentTime = 0;
-      audioRef.current.play();
-      setIsPlaying(true);
-    }
+  useKeyboardSound(keyCode, soundFile, setIsPressed);
+
+  const handlePress = () => {
+    playSound(soundFile);
+    setIsPressed(true);
+    if (onClick) onClick();
   };
 
-  const handleAudioEnded = () => {
-    setIsPlaying(false);
+  const handleRelease = () => {
+    setIsPressed(false);
+    if (onKeyUp) onKeyUp();
   };
 
   let groupClass = '';
@@ -48,11 +47,17 @@ const KeyboardKeyWhite = ({ keyCode, soundFile, children, index }) => {
 
   return (
     <li
-      className={`key white ${groupClass}`}
-      onMouseUp={handleMouseUp}
+      className={`key white ${groupClass} ${isPressed ? 'is-active' : ''}`}
+      onMouseDown={handlePress}
+      onMouseUp={handleRelease}
+      onMouseLeave={handleRelease}
+      onTouchStart={(e) => {
+        e.preventDefault();
+        handlePress();
+      }}
+      onTouchEnd={handleRelease}
     >
       <span>{children}</span>
-      <audio ref={audioRef} src={`../../src/sounds/${soundFile}`} onEnded={handleAudioEnded} />
     </li>
   );
 };

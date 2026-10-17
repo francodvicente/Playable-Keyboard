@@ -1,27 +1,26 @@
-import React, { useRef, useState } from 'react';
+/* eslint-disable react/prop-types */
+import { useState } from 'react';
 import useKeyboardSound from '../customHooks/use-keyboard-sound';
-import useMouseSound from '../customHooks/use-mouse-sound';
-      
-const KeyboardKeyBlack = ({ keyCode, soundFile, children, index }) => {
-  const audioRef = useRef(null);
-  useKeyboardSound(keyCode, soundFile);
-  const mouseSoundRef = useMouseSound(soundFile);
-  const [isPlaying, setIsPlaying] = useState(false);
-      
-  const handleMouseUp = () => {
-    if (audioRef.current && !isPlaying) {
-      audioRef.current.currentTime = 0; // Reinicia el audio al inicio
-      audioRef.current.play();
-      setIsPlaying(true);
-      }
-    };
-      
-  const handleAudioEnded = () => {
-    setIsPlaying(false);
-    };
-      
+import { playSound } from '../utils/sound-player';
+
+const KeyboardKeyBlack = ({ keyCode, soundFile, children, index, onClick, onKeyUp }) => {
+  const [isPressed, setIsPressed] = useState(false);
+
+  useKeyboardSound(keyCode, soundFile, setIsPressed);
+
+  const handlePress = () => {
+    playSound(soundFile);
+    setIsPressed(true);
+    if (onClick) onClick();
+  };
+
+  const handleRelease = () => {
+    setIsPressed(false);
+    if (onKeyUp) onKeyUp();
+  };
+
   let groupClass = '';
-      
+
   switch (index) {
     case 0:
       groupClass = 'group-0';
@@ -41,22 +40,26 @@ const KeyboardKeyBlack = ({ keyCode, soundFile, children, index }) => {
     case 5:
       groupClass = 'group-5';
       break;
-      default:
+    default:
       groupClass = '';
       break;
-    }
-      
-    return (
-      <li
-      className={`key black ${groupClass}`}
-      // onMouseUp={() => audioRef.current.play()}
-      onMouseUp={handleMouseUp}
-      >
+  }
+
+  return (
+    <li
+      className={`key black ${groupClass} ${isPressed ? 'is-active' : ''}`}
+      onMouseDown={handlePress}
+      onMouseUp={handleRelease}
+      onMouseLeave={handleRelease}
+      onTouchStart={(e) => {
+        e.preventDefault();
+        handlePress();
+      }}
+      onTouchEnd={handleRelease}
+    >
       <span>{children}</span>
-      <audio ref={audioRef} src={`../../src/sounds/${soundFile}`} onEnded={handleAudioEnded} />
-      </li>
-      );
-    };
-      
-  export default KeyboardKeyBlack;
-      
+    </li>
+  );
+};
+
+export default KeyboardKeyBlack;

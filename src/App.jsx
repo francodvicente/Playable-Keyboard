@@ -155,7 +155,7 @@ function App() {
             </KeyboardKeyWhite>
             {/* 30 to 36 - sixth group of keys - 4 blacas y 3 negras */}
             <KeyboardKeyWhite index={3}
-              kkeyCode="s1" soundFile="D2.ogg" onClick={handleClick} onKeyUp={handleKeyUp}>
+              keyCode="s1" soundFile="D2.ogg" onClick={handleClick} onKeyUp={handleKeyUp}>
                 S1
             </KeyboardKeyWhite>
             <KeyboardKeyBlack index={3}
@@ -275,7 +275,7 @@ function App() {
                 A2
             </KeyboardKeyWhite>
             <KeyboardKeyBlack index={5}
-              keyToPress="ut" soundFile="Ds1.ogg" onClick={handleClick} onKeyUp={handleKeyUp}>
+              keyCode="ut" soundFile="Ds1.ogg" onClick={handleClick} onKeyUp={handleKeyUp}>
                 UT
             </KeyboardKeyBlack>
             <KeyboardKeyWhite index={5}
