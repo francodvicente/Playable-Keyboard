@@ -1,25 +1,27 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
-// import KeyboardKeyBlack from "./KeyboardKeyBlack";
 
-function TurnButton({initialIsOn}) {
-
+function TurnButton({ initialIsOn = true }) {
   const [isOn, setIsOn] = useState(initialIsOn);
 
   const handleClick1 = () => {
     setIsOn(!isOn);
   };
   const text = isOn ? "On" : "Off";
-  const buttonClassName = isOn
-    ? "keyboard-setings-turnOnOff-button is-on"
-    : "keyboard-setings-turnOnOff-button";
+  const buttonClassName = `keyboard-synth-btn turn-btn keyboard-setings-turnOnOff-button ${
+    isOn ? "is-on" : "is-off"
+  }`;
 
   return (
-    <>
-      <button className={buttonClassName} onClick={handleClick1}>
-        <span className="keyboard-setings-turnOnOff-text">{text}</span>
-        <span className="keyboard-setings-turnOnOff-stopOn">Turn</span>
-      </button>
-    </>
+    <button
+      type="button"
+      className={buttonClassName}
+      onClick={handleClick1}
+      aria-label={`Power: ${text}`}
+    >
+      <span className="btn-status-led" />
+      <span className="btn-label">{text}</span>
+    </button>
   );
 }
 

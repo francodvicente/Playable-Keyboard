@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const BaseButton = () => {
   const [audio] = useState(new Audio(`../../src/sounds/base.mp3`));
@@ -31,8 +31,16 @@ const BaseButton = () => {
   }, []);
 
   return (
-    <button className='sound-base' onClick={toggleAudio}>
-      {isPlaying ? 'Stop' : 'Base'}
+    <button
+      type="button"
+      className={`keyboard-synth-btn base-btn sound-base ${
+        isPlaying ? 'is-playing' : 'is-idle'
+      }`}
+      onClick={toggleAudio}
+      aria-label={isPlaying ? 'Stop base' : 'Play base'}
+    >
+      <span className="btn-status-led" />
+      <span className="btn-label">{isPlaying ? 'Stop' : 'Base'}</span>
     </button>
   );
 };

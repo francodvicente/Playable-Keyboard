@@ -39,67 +39,175 @@ body {
   border-radius: 30px;
 }
 
-/* OVAL BUTTON */
-button{
+/* SYNTHESIZER CONTROL BUTTONS (Base & On/Off) */
+button {
   outline: none;
 }
-.keyboard-setings-turnOnOff-button {
+
+.keyboard-synth-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 96px;
+  min-width: 96px;
+  max-width: 96px;
+  height: 42px;
+  padding: 0 12px;
+  border-radius: 10px;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
   cursor: pointer;
-  margin-left: 16px;
-  border: 0;
-  border-radius: 999px;
-  padding: 6px 16px;
-  font-weight: bold; 
-  transition: .3s ease background-color;
-  border: 2px solid #302d2d;
   user-select: none;
   outline: none;
-  background: linear-gradient(to right, #ff000062, #37ff0025);
-  font-weight: bold;
-  color: #fff;
+  box-sizing: border-box;
+  background: radial-gradient(circle at 50% 30%, #161c24 0%, #0b0e13 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-top-color: rgba(255, 255, 255, 0.22);
+  border-bottom-color: rgba(0, 0, 0, 0.6);
+  color: #94a3b8;
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.08),
+    inset 0 2px 6px rgba(0, 0, 0, 0.7),
+    0 2px 5px rgba(0, 0, 0, 0.35);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
 }
 
-.keyboard-setings-turnOnOff-button.is-on {
-  
-  border: 2px solid #bbb;
-  background-color: transparent;
-  background: linear-gradient(to right, #ff00000f, #37ff006b);
-  font-weight: bold;
-  color: #fff;
-  width: 90px;
-  user-select: none;
-  outline: none;
+.keyboard-synth-btn:active {
+  transform: translateY(1px);
+  box-shadow: 
+    inset 0 2px 8px rgba(0, 0, 0, 0.9),
+    0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.keyboard-setings-turnOnOff-button:hover {
-  opacity: .8;
+.keyboard-synth-btn .btn-status-led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #252d38;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-.keyboard-setings-turnOnOff-button.is-on:hover {
-  background-color: rgba(255, 108, 108, 0.142);
-  border: 1px solid red;
-  color: red;
-  transition: .3s ease all;
+.keyboard-synth-btn .btn-label {
+  display: inline-block;
+  line-height: 1;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
-.keyboard-setings-turnOnOff-text{
-  display: block;
-  user-select: none;
-  outline: none;
+/* Glass shine overlay matching LCD screen */
+.keyboard-synth-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 45%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.01) 80%,
+    transparent 100%
+  );
+  border-radius: 9px 9px 0 0;
+  pointer-events: none;
 }
 
-.keyboard-setings-turnOnOff-button.is-on:hover .keyboard-setings-turnOnOff-text{
-  display: none;
+/* ON/OFF BUTTON - ESTADOS */
+.turn-btn.is-on {
+  border-color: rgba(56, 189, 248, 0.35);
+  border-top-color: rgba(56, 189, 248, 0.55);
+  color: #f1f5f9;
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.1),
+    inset 0 0 14px rgba(56, 189, 248, 0.08),
+    0 0 10px rgba(56, 189, 248, 0.12),
+    0 2px 5px rgba(0, 0, 0, 0.35);
 }
 
-.keyboard-setings-turnOnOff-stopOn{
-  display: none;
+.turn-btn.is-on .btn-status-led {
+  background: #38bdf8;
+  box-shadow: 0 0 6px #38bdf8, 0 0 10px rgba(56, 189, 248, 0.6);
 }
 
-.keyboard-setings-turnOnOff-button.is-on:hover .keyboard-setings-turnOnOff-stopOn{
-  display: block;
+.turn-btn.is-on .btn-label {
+  color: #f1f5f9;
+  text-shadow: 0 0 6px rgba(241, 245, 249, 0.6);
 }
-/* OVAL BUTTON */
+
+.turn-btn.is-on:hover {
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.15),
+    inset 0 0 16px rgba(56, 189, 248, 0.12),
+    0 0 14px rgba(56, 189, 248, 0.2),
+    0 2px 5px rgba(0, 0, 0, 0.35);
+}
+
+.turn-btn.is-off {
+  background: #090b0e;
+  border-color: rgba(255, 255, 255, 0.06);
+  color: #475569;
+}
+
+.turn-btn.is-off:hover {
+  color: #94a3b8;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* BASE BUTTON - ESTADOS */
+.base-btn.is-playing {
+  border-color: rgba(34, 197, 94, 0.4);
+  border-top-color: rgba(34, 197, 94, 0.6);
+  color: #f1f5f9;
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.1),
+    inset 0 0 14px rgba(34, 197, 94, 0.09),
+    0 0 10px rgba(34, 197, 94, 0.15),
+    0 2px 5px rgba(0, 0, 0, 0.35);
+}
+
+.base-btn.is-playing .btn-status-led {
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e, 0 0 10px rgba(34, 197, 94, 0.6);
+}
+
+.base-btn.is-playing .btn-label {
+  color: #f1f5f9;
+  text-shadow: 0 0 6px rgba(241, 245, 249, 0.6);
+}
+
+.base-btn.is-playing:hover {
+  border-color: rgba(239, 68, 68, 0.45);
+  box-shadow: 
+    inset 0 0 14px rgba(239, 68, 68, 0.1),
+    0 0 12px rgba(239, 68, 68, 0.18),
+    0 2px 5px rgba(0, 0, 0, 0.35);
+}
+
+.base-btn.is-playing:hover .btn-label {
+  color: #fca5a5;
+  text-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+}
+
+.base-btn.is-playing:hover .btn-status-led {
+  background: #ef4444;
+  box-shadow: 0 0 6px #ef4444;
+}
+
+.base-btn.is-idle:hover {
+  color: #f1f5f9;
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.12),
+    0 0 10px rgba(255, 255, 255, 0.06),
+    0 2px 5px rgba(0, 0, 0, 0.35);
+}
 
 .piano-keys {
   display: flex;
