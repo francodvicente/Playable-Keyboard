@@ -24,15 +24,15 @@ body {
   color: #B2B2B2;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
 }
 .keyboard-header h2 {
   font-size: 1.6rem;
 }
-.keyboard-header span {
-  font-weight: 500;
-  margin-right: 20px;
-  margin-left: 20px;
-  font-size: 1.19rem;
+.keyboard-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 .keyboard-header input {
   outline: none;
@@ -329,6 +329,9 @@ br{
     width: 400px;
     padding: 20px 25px;
     border-radius: 10px;
+  }
+  .wrapper .keyboard-header {
+    justify-content: center;
   }
   .group-1{
     display: none;

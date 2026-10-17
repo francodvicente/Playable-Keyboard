@@ -3,6 +3,7 @@ import KeyboardKeyBlack from './components/keyboard-key-black'
 import WriterTitle from './components/writer-title'
 import TurnButton from './components/turn-button'
 import BaseButton from './components/base-button'
+import KeyboardScreen from './components/keyboard-screen'
 import './App.css'
 
 function App() {
@@ -24,9 +25,11 @@ function App() {
         <div className="wrapper">
           <div className='keyboard-header'>
             <h2>Keyboard 1.0</h2>
+            <KeyboardScreen text="Ready to play" isOn={true} />
+            <div className='keyboard-header-actions'>
               <BaseButton/>
-                <TurnButton initialIsOn={false}>
-                </TurnButton>
+              <TurnButton initialIsOn={true} />
+            </div>
           </div>
            <ul className="piano-keys">
             {/* 1 to 5 - first group of keys - 3 white y 2 black */}
