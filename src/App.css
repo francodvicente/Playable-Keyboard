@@ -25,6 +25,7 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  flex-wrap: wrap;
 }
 .keyboard-header h2 {
   font-size: 1.6rem;
@@ -32,7 +33,9 @@ body {
 .keyboard-header-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 .keyboard-header input {
   outline: none;
@@ -215,6 +218,107 @@ button {
     inset 0 1px 2px rgba(255, 255, 255, 0.12),
     0 0 10px rgba(255, 255, 255, 0.06),
     0 2px 5px rgba(0, 0, 0, 0.35);
+}
+
+/* RECORD & PLAYBACK BUTTONS - ESTADOS */
+.rec-btn.is-idle:not(:disabled):hover {
+  color: #f1f5f9;
+  border-color: rgba(239, 68, 68, 0.3);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.12),
+    0 0 10px rgba(239, 68, 68, 0.12),
+    0 2px 5px rgba(0, 0, 0, 0.35);
+}
+
+.rec-btn.is-idle:not(:disabled):hover .btn-status-led {
+  background: #ef4444;
+  box-shadow: 0 0 5px rgba(239, 68, 68, 0.6);
+}
+
+.rec-btn.is-recording {
+  border-color: rgba(239, 68, 68, 0.45);
+  border-top-color: rgba(239, 68, 68, 0.65);
+  color: #f1f5f9;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.1),
+    inset 0 0 14px rgba(239, 68, 68, 0.12),
+    0 0 12px rgba(239, 68, 68, 0.2),
+    0 2px 5px rgba(0, 0, 0, 0.35);
+}
+
+.rec-btn.is-recording .btn-status-led {
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444, 0 0 12px rgba(239, 68, 68, 0.7);
+  animation: synth-rec-pulse 1.1s ease-in-out infinite;
+}
+
+.rec-btn.is-recording .btn-label {
+  color: #fca5a5;
+  text-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+}
+
+@keyframes synth-rec-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+}
+
+.play-btn.is-idle:not(:disabled):hover {
+  color: #f1f5f9;
+  border-color: rgba(56, 189, 248, 0.35);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.12),
+    0 0 10px rgba(56, 189, 248, 0.14),
+    0 2px 5px rgba(0, 0, 0, 0.35);
+}
+
+.play-btn.is-idle:not(:disabled):hover .btn-status-led {
+  background: #38bdf8;
+  box-shadow: 0 0 5px rgba(56, 189, 248, 0.6);
+}
+
+.play-btn.is-playing {
+  border-color: rgba(34, 197, 94, 0.4);
+  border-top-color: rgba(34, 197, 94, 0.6);
+  color: #f1f5f9;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.1),
+    inset 0 0 14px rgba(34, 197, 94, 0.09),
+    0 0 10px rgba(34, 197, 94, 0.15),
+    0 2px 5px rgba(0, 0, 0, 0.35);
+}
+
+.play-btn.is-playing .btn-status-led {
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e, 0 0 10px rgba(34, 197, 94, 0.6);
+}
+
+.play-btn.is-playing .btn-label {
+  color: #f1f5f9;
+  text-shadow: 0 0 6px rgba(241, 245, 249, 0.6);
+}
+
+.play-btn.is-playing:hover {
+  border-color: rgba(239, 68, 68, 0.45);
+  box-shadow:
+    inset 0 0 14px rgba(239, 68, 68, 0.1),
+    0 0 12px rgba(239, 68, 68, 0.18),
+    0 2px 5px rgba(0, 0, 0, 0.35);
+}
+
+.play-btn.is-playing:hover .btn-label {
+  color: #fca5a5;
+  text-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+}
+
+.play-btn.is-playing:hover .btn-status-led {
+  background: #ef4444;
+  box-shadow: 0 0 6px #ef4444;
 }
 
 .piano-keys {
@@ -450,6 +554,13 @@ br{
   }
   .wrapper .keyboard-header {
     justify-content: center;
+  }
+  .keyboard-synth-btn {
+    width: 88px;
+    min-width: 88px;
+    max-width: 88px;
+    height: 38px;
+    font-size: 0.78rem;
   }
   .group-1{
     display: none;

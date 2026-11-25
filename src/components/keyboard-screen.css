@@ -61,6 +61,31 @@
   box-shadow: 0 0 6px #ef4444, 0 0 10px rgba(239, 68, 68, 0.45);
 }
 
+.keyboard-lcd-screen.is-on.is-recording {
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.8),
+    inset 0 0 14px rgba(239, 68, 68, 0.08),
+    0 0 12px rgba(239, 68, 68, 0.14);
+}
+
+.keyboard-lcd-screen.is-on.is-recording .lcd-status-led {
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444, 0 0 12px rgba(239, 68, 68, 0.7);
+  animation: lcd-rec-pulse 1.1s ease-in-out infinite;
+}
+
+@keyframes lcd-rec-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+}
+
 .lcd-inner-bezel {
   position: relative;
   display: flex;

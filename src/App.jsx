@@ -1,37 +1,155 @@
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import KeyboardKeyWhite from './components/keyboard-key-white'
 import KeyboardKeyBlack from './components/keyboard-key-black'
 import WriterTitle from './components/writer-title'
 import TurnButton from './components/turn-button'
 import BaseButton from './components/base-button'
 import KeyboardScreen from './components/keyboard-screen'
+import RecordingControls from './components/recording-controls'
+import { loadRecording, saveRecording } from './utils/recording-storage'
+import { playSound } from './utils/sound-player'
 import { KeyboardContext } from './context/keyboard-context'
 import './App.css'
 
 function App() {
   const [isOn, setIsOn] = useState(true);
   const [screenText, setScreenText] = useState('Ready to play');
-  const offTimerRef = useRef(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isPlayingRecording, setIsPlayingRecording] = useState(false);
+  const [hasRecording, setHasRecording] = useState(() => loadRecording().length > 0);
+  const [playbackActiveNote, setPlaybackActiveNote] = useState(null);
 
-  const clearOffTimer = () => {
-    if (offTimerRef.current !== null) {
-      clearTimeout(offTimerRef.current);
-      offTimerRef.current = null;
+  const screenTimerRef = useRef(null);
+  const playbackTimersRef = useRef([]);
+  const isRecordingRef = useRef(false);
+  const recordingStartRef = useRef(0);
+  const recordedNotesRef = useRef([]);
+
+  const clearScreenTimer = () => {
+    if (screenTimerRef.current !== null) {
+      clearTimeout(screenTimerRef.current);
+      screenTimerRef.current = null;
     }
   };
 
-  useEffect(() => {
-    return () => clearOffTimer();
+  const stopPlayback = useCallback(() => {
+    playbackTimersRef.current.forEach((id) => clearTimeout(id));
+    playbackTimersRef.current = [];
+    setPlaybackActiveNote(null);
+    setIsPlayingRecording(false);
   }, []);
 
+  useEffect(() => {
+    return () => {
+      clearScreenTimer();
+      stopPlayback();
+    };
+  }, [stopPlayback]);
+
+  const recordNote = useCallback(({ keyCode, soundFile }) => {
+    if (!isRecordingRef.current) return;
+    const delay = Math.max(0, Date.now() - recordingStartRef.current);
+    recordedNotesRef.current.push({ keyCode, soundFile, delay });
+  }, []);
+
+  const finishRecording = useCallback((showEndScreen = true) => {
+    isRecordingRef.current = false;
+    setIsRecording(false);
+
+    const rawNotes = recordedNotesRef.current;
+    if (rawNotes.length > 0) {
+      const firstDelay = rawNotes[0].delay;
+      const normalizedNotes = rawNotes.map((note) => ({
+        ...note,
+        delay: note.delay - firstDelay,
+      }));
+      saveRecording(normalizedNotes);
+      setHasRecording(true);
+    }
+
+    if (showEndScreen) {
+      clearScreenTimer();
+      setScreenText('End of recording');
+      screenTimerRef.current = setTimeout(() => {
+        setScreenText('');
+        screenTimerRef.current = null;
+      }, 4000);
+    }
+  }, []);
+
+  const handleToggleRecord = () => {
+    if (!isOn) return;
+    clearScreenTimer();
+
+    if (isRecording) {
+      finishRecording(true);
+    } else {
+      stopPlayback();
+      recordedNotesRef.current = [];
+      recordingStartRef.current = Date.now();
+      isRecordingRef.current = true;
+      setIsRecording(true);
+      setScreenText('Recording');
+    }
+  };
+
+  const handleTogglePlayback = () => {
+    if (!isOn || isRecording) return;
+
+    if (isPlayingRecording) {
+      stopPlayback();
+      return;
+    }
+
+    const notes = loadRecording();
+    if (notes.length === 0) {
+      setHasRecording(false);
+      return;
+    }
+
+    setIsPlayingRecording(true);
+    const timers = [];
+
+    notes.forEach((note, index) => {
+      const playTimer = setTimeout(() => {
+        playSound(note.soundFile);
+        setPlaybackActiveNote({
+          keyCode: note.keyCode,
+          soundFile: note.soundFile,
+          index,
+        });
+      }, note.delay);
+      timers.push(playTimer);
+
+      const releaseTimer = setTimeout(() => {
+        setPlaybackActiveNote((current) =>
+          current && current.index === index ? null : current
+        );
+      }, note.delay + 200);
+      timers.push(releaseTimer);
+    });
+
+    const totalDuration = notes[notes.length - 1].delay + 350;
+    const endTimer = setTimeout(() => {
+      stopPlayback();
+    }, totalDuration);
+    timers.push(endTimer);
+
+    playbackTimersRef.current = timers;
+  };
+
   const handleTogglePower = () => {
-    clearOffTimer();
+    clearScreenTimer();
     if (isOn) {
+      if (isRecordingRef.current) {
+        finishRecording(false);
+      }
+      stopPlayback();
       setIsOn(false);
       setScreenText('Off');
-      offTimerRef.current = setTimeout(() => {
+      screenTimerRef.current = setTimeout(() => {
         setScreenText('');
-        offTimerRef.current = null;
+        screenTimerRef.current = null;
       }, 4000);
     } else {
       setIsOn(true);
@@ -39,7 +157,10 @@ function App() {
     }
   };
 
-  const keyboardContextValue = useMemo(() => ({ isOn }), [isOn]);
+  const keyboardContextValue = useMemo(
+    () => ({ isOn, recordNote, playbackActiveNote }),
+    [isOn, recordNote, playbackActiveNote]
+  );
   const handleClick = () => {
     console.log("Botón clickeado");
   };
@@ -59,8 +180,16 @@ function App() {
         <div className="wrapper">
           <div className='keyboard-header'>
             <h2>Keyboard 1.0</h2>
-            <KeyboardScreen text={screenText} isOn={isOn} />
+            <KeyboardScreen text={screenText} isOn={isOn} isRecording={isRecording} />
             <div className='keyboard-header-actions'>
+              <RecordingControls
+                isOn={isOn}
+                isRecording={isRecording}
+                isPlayingRecording={isPlayingRecording}
+                hasRecording={hasRecording}
+                onToggleRecord={handleToggleRecord}
+                onTogglePlayback={handleTogglePlayback}
+              />
               <BaseButton/>
               <TurnButton isOn={isOn} onToggle={handleTogglePower} />
             </div>

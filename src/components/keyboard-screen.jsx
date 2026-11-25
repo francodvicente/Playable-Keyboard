@@ -2,7 +2,7 @@
 import { useRef, useState, useEffect } from 'react';
 import './keyboard-screen.css';
 
-const KeyboardScreen = ({ text = 'Ready to play', isOn = true }) => {
+const KeyboardScreen = ({ text = 'Ready to play', isOn = true, isRecording = false }) => {
   const containerRef = useRef(null);
   const measureRef = useRef(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
@@ -36,7 +36,7 @@ const KeyboardScreen = ({ text = 'Ready to play', isOn = true }) => {
     <div
       className={`keyboard-lcd-screen ${isOn ? 'is-on' : 'is-off'} ${
         hasText ? 'has-text' : ''
-      }`}
+      } ${isOn && isRecording ? 'is-recording' : ''}`}
     >
       <span className="lcd-status-led" />
       <div className="lcd-inner-bezel" ref={containerRef}>

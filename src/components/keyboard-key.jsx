@@ -15,14 +15,17 @@ const GROUP_CLASSES = {
 
 const KeyboardKey = ({ variant, keyCode, soundFile, children, index, onClick, onKeyUp }) => {
   const [isPressed, setIsPressed] = useState(false);
-  const { isOn } = useKeyboardContext();
+  const { isOn, recordNote, playbackActiveNote } = useKeyboardContext();
 
-  useKeyboardSound(keyCode, soundFile, setIsPressed, isOn);
+  useKeyboardSound(keyCode, soundFile, setIsPressed, isOn, recordNote);
 
   const handlePress = () => {
     if (!isOn) return;
     playSound(soundFile);
     setIsPressed(true);
+    if (recordNote) {
+      recordNote({ keyCode, soundFile });
+    }
     if (onClick) onClick();
   };
 
@@ -33,11 +36,18 @@ const KeyboardKey = ({ variant, keyCode, soundFile, children, index, onClick, on
     if (isOn && onKeyUp) onKeyUp();
   };
 
+  const isPlaybackActive = Boolean(
+    isOn &&
+      playbackActiveNote &&
+      playbackActiveNote.soundFile === soundFile &&
+      playbackActiveNote.keyCode === keyCode
+  );
+
   const groupClass = GROUP_CLASSES[index] || '';
 
   return (
     <li
-      className={`key ${variant} ${groupClass} ${isPressed ? 'is-active' : ''}`}
+      className={`key ${variant} ${groupClass} ${isPressed || isPlaybackActive ? 'is-active' : ''}`}
       onMouseDown={handlePress}
       onMouseUp={handleRelease}
       onMouseLeave={handleRelease}
