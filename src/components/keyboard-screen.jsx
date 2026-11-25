@@ -7,8 +7,10 @@ const KeyboardScreen = ({ text = 'Ready to play', isOn = true }) => {
   const measureRef = useRef(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
 
+  const hasText = Boolean(text);
+
   useEffect(() => {
-    if (!isOn || !text) {
+    if (!text) {
       setIsOverflowing(false);
       return;
     }
@@ -21,7 +23,6 @@ const KeyboardScreen = ({ text = 'Ready to play', isOn = true }) => {
       }
     };
 
-    // Run check on next microtask to ensure layout is ready
     const timer = setTimeout(checkOverflow, 0);
 
     window.addEventListener('resize', checkOverflow);
@@ -29,10 +30,14 @@ const KeyboardScreen = ({ text = 'Ready to play', isOn = true }) => {
       clearTimeout(timer);
       window.removeEventListener('resize', checkOverflow);
     };
-  }, [text, isOn]);
+  }, [text]);
 
   return (
-    <div className={`keyboard-lcd-screen ${isOn ? 'is-on' : 'is-off'}`}>
+    <div
+      className={`keyboard-lcd-screen ${isOn ? 'is-on' : 'is-off'} ${
+        hasText ? 'has-text' : ''
+      }`}
+    >
       <span className="lcd-status-led" />
       <div className="lcd-inner-bezel" ref={containerRef}>
         {/* Hidden measurement node with exact text & styles */}
@@ -40,7 +45,7 @@ const KeyboardScreen = ({ text = 'Ready to play', isOn = true }) => {
           {text}
         </span>
 
-        {isOn && text && (
+        {hasText && (
           <div className="lcd-viewport">
             {isOverflowing ? (
               <div className="lcd-carousel-track">

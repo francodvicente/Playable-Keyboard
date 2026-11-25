@@ -1,22 +1,28 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 
-function TurnButton({ initialIsOn = true }) {
-  const [isOn, setIsOn] = useState(initialIsOn);
+function TurnButton({ isOn, onToggle, initialIsOn = true }) {
+  const [internalIsOn, setInternalIsOn] = useState(initialIsOn);
+  const currentIsOn = isOn !== undefined ? isOn : internalIsOn;
 
-  const handleClick1 = () => {
-    setIsOn(!isOn);
+  const handleClick = () => {
+    if (onToggle) {
+      onToggle();
+    } else {
+      setInternalIsOn((prev) => !prev);
+    }
   };
-  const text = isOn ? "On" : "Off";
+
+  const text = currentIsOn ? "On" : "Off";
   const buttonClassName = `keyboard-synth-btn turn-btn keyboard-setings-turnOnOff-button ${
-    isOn ? "is-on" : "is-off"
+    currentIsOn ? "is-on" : "is-off"
   }`;
 
   return (
     <button
       type="button"
       className={buttonClassName}
-      onClick={handleClick1}
+      onClick={handleClick}
       aria-label={`Power: ${text}`}
     >
       <span className="btn-status-led" />

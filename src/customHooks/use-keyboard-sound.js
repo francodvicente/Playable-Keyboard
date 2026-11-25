@@ -1,9 +1,14 @@
 import { useEffect } from 'react';
 import { playSound } from '../utils/sound-player';
 
-const useKeyboardSound = (keyCode, soundFile, onActiveChange) => {
+const useKeyboardSound = (keyCode, soundFile, onActiveChange, isOn = true) => {
   useEffect(() => {
-    if (!keyCode || !soundFile) return;
+    if (!keyCode || !soundFile || !isOn) {
+      if (!isOn && onActiveChange) {
+        onActiveChange(false);
+      }
+      return;
+    }
 
     const target = keyCode.toLowerCase();
 
@@ -28,7 +33,7 @@ const useKeyboardSound = (keyCode, soundFile, onActiveChange) => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [keyCode, soundFile, onActiveChange]);
+  }, [keyCode, soundFile, onActiveChange, isOn]);
 };
 
 export default useKeyboardSound;

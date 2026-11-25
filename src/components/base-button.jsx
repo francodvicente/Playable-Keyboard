@@ -1,32 +1,63 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { useKeyboardContext } from '../context/keyboard-context';
 
 const BaseButton = () => {
-  const [audio] = useState(new Audio('/sounds/base.mp3'));
+  const { isOn } = useKeyboardContext();
+  const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const toggleAudio = () => {
-    if (isPlaying) {
-      audio.pause();
-      audio.currentTime = 0;
-    } else {
-      audio.loop = true;
-      audio.play();
-    }
-    setIsPlaying(!isPlaying);
-  };
+  const toggleAudio = useCallback(() => {
+    if (!isOn) return;
 
-  const handleKeyPress = (event) => {
-    if (event.key === ' ') {
-      toggleAudio();
+    if (!audioRef.current) {
+      audioRef.current = new Audio('/sounds/base.mp3');
+      audioRef.current.loop = true;
     }
-  };
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setIsPlaying(false);
+    } else {
+      audioRef.current.loop = true;
+      audioRef.current.play().catch((err) => {
+        console.debug('Could not play base audio:', err);
+      });
+      setIsPlaying(true);
+    }
+  }, [isOn, isPlaying]);
 
   useEffect(() => {
+    if (!isOn && isPlaying) {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+      setIsPlaying(false);
+    }
+  }, [isOn, isPlaying]);
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (!isOn) return;
+      if (event.key === ' ' && !event.repeat) {
+        event.preventDefault();
+        toggleAudio();
+      }
+    };
+
     window.addEventListener('keydown', handleKeyPress);
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
-      audio.pause();
-      audio.currentTime = 0;
+    };
+  }, [isOn, toggleAudio]);
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
     };
   }, []);
 
@@ -37,6 +68,7 @@ const BaseButton = () => {
         isPlaying ? 'is-playing' : 'is-idle'
       }`}
       onClick={toggleAudio}
+      disabled={!isOn}
       aria-label={isPlaying ? 'Stop base' : 'Play base'}
     >
       <span className="btn-status-led" />

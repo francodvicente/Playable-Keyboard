@@ -34,6 +34,13 @@
   box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.9);
 }
 
+.keyboard-lcd-screen.is-off.has-text {
+  border-color: rgba(239, 68, 68, 0.22);
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.85),
+    inset 0 0 12px rgba(239, 68, 68, 0.05);
+}
+
 .lcd-status-led {
   width: 6px;
   height: 6px;
@@ -47,6 +54,11 @@
 .keyboard-lcd-screen.is-on .lcd-status-led {
   background: #38bdf8;
   box-shadow: 0 0 6px #38bdf8, 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.keyboard-lcd-screen.is-off.has-text .lcd-status-led {
+  background: #ef4444;
+  box-shadow: 0 0 6px #ef4444, 0 0 10px rgba(239, 68, 68, 0.45);
 }
 
 .lcd-inner-bezel {
@@ -83,6 +95,13 @@
   text-shadow: 
     0 0 5px rgba(241, 245, 249, 0.6),
     0 0 10px rgba(226, 232, 240, 0.3);
+}
+
+.keyboard-lcd-screen.is-off.has-text .lcd-text {
+  color: #fca5a5;
+  text-shadow:
+    0 0 6px rgba(239, 68, 68, 0.5),
+    0 0 12px rgba(239, 68, 68, 0.25);
 }
 
 /* Hidden measuring element to detect overflow accurately */

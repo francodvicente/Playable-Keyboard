@@ -1,12 +1,45 @@
+import { useState, useRef, useEffect, useMemo } from 'react'
 import KeyboardKeyWhite from './components/keyboard-key-white'
 import KeyboardKeyBlack from './components/keyboard-key-black'
 import WriterTitle from './components/writer-title'
 import TurnButton from './components/turn-button'
 import BaseButton from './components/base-button'
 import KeyboardScreen from './components/keyboard-screen'
+import { KeyboardContext } from './context/keyboard-context'
 import './App.css'
 
 function App() {
+  const [isOn, setIsOn] = useState(true);
+  const [screenText, setScreenText] = useState('Ready to play');
+  const offTimerRef = useRef(null);
+
+  const clearOffTimer = () => {
+    if (offTimerRef.current !== null) {
+      clearTimeout(offTimerRef.current);
+      offTimerRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => clearOffTimer();
+  }, []);
+
+  const handleTogglePower = () => {
+    clearOffTimer();
+    if (isOn) {
+      setIsOn(false);
+      setScreenText('Off');
+      offTimerRef.current = setTimeout(() => {
+        setScreenText('');
+        offTimerRef.current = null;
+      }, 4000);
+    } else {
+      setIsOn(true);
+      setScreenText('Ready to play');
+    }
+  };
+
+  const keyboardContextValue = useMemo(() => ({ isOn }), [isOn]);
   const handleClick = () => {
     console.log("Botón clickeado");
   };
@@ -22,13 +55,14 @@ function App() {
      <br /> 
      <br />
       <section className='body'>
+        <KeyboardContext.Provider value={keyboardContextValue}>
         <div className="wrapper">
           <div className='keyboard-header'>
             <h2>Keyboard 1.0</h2>
-            <KeyboardScreen text="Ready to play" isOn={true} />
+            <KeyboardScreen text={screenText} isOn={isOn} />
             <div className='keyboard-header-actions'>
               <BaseButton/>
-              <TurnButton initialIsOn={true} />
+              <TurnButton isOn={isOn} onToggle={handleTogglePower} />
             </div>
           </div>
            <ul className="piano-keys">
@@ -289,6 +323,7 @@ function App() {
             </KeyboardKeyWhite>
           </ul>
         </div>
+        </KeyboardContext.Provider>
         <footer className="footer-container">
           <p className='footer-text'>© 2024 Franco Vicente</p>
         </footer>
